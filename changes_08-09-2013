@@ -1,0 +1,20 @@
+# CHANGELOG
+# DATE (DD|MM|YY): 08 09 13
+
+~ Added IRTU system.
+	~ Basic Syntax: <DATA_TYPE (1 byte)> <NAME_LENGTH (1 short)> <NAME (1 char array[NAME_LENGTH]> <DATA>
+	
+	~ Added IRTU Bytes / Shorts / Integers / Longs (data types: TAG_TYPE_BYTE / TAG_TYPE_SHORT / TAG_TYPE_INT / TAG_TYPE_LONG)
+		~ Data Syntax:  <DATA (1 / 2 / 4 / 8 bytes)>
+	~ Added IRTU Objects (data types: TAG_TYPE_IRTU)
+		~ Data Syntax: <DATA (unlimited length)> TAG_END_IRTU
+	~ Additional Comments:
+		Nested IRTU Objects are possible. Putting a TAG_END_IRTU byte will only close the most recent IRTU Object
+		
+	! IRTU Float, Double and Lists have yet to be implemented.
+		! Workaround for Floats and Doubles: Convert to Integer / Long, save them as such, and re-convert them.
+		! Workaround for Lists: Use IRTU Objects to store IRTU Elements of the same type.
+	
+	! A saving system has yet to be implemented.
+	
+? Dependencies:
