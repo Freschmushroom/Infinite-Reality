@@ -45,10 +45,25 @@ void IRTULong::read(istream* stream) {
 			value <<= 8;
 			value |= i;
 			++cnt;
-			if (cnt == 8) {
-				return;
+			if (cnt == /*8*/ 4) {
+				break;
 			}
 			continue;
 		}
 	}
+	delete[] buffer;
+}
+
+void IRTULong::write(ostream* stream) {
+	std::string s;
+	s += TAG_TYPE_LONG;
+	s += ((name.length() & 0xff00) >> 8);
+	s += (name.length() & 0xff);
+	s += name;
+	long l = value;
+	for (unsigned int j = 0; j < sizeof(l); j++) {
+		s += (l & 0xff000000) >> 24;
+		l <<= 8;
+	}
+	stream->write(s.c_str(), s.length());
 }

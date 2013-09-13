@@ -46,9 +46,24 @@ void IRTUShort::read(istream* stream) {
 			value |= i;
 			++cnt;
 			if (cnt == 2) {
-				return;
+				break;
 			}
 			continue;
 		}
 	}
+	delete[] buffer;
+}
+
+void IRTUShort::write(ostream* stream) {
+	std::string s;
+	s += TAG_TYPE_SHORT;
+	s += ((name.length() & 0xff00) >> 8);
+	s += (name.length() & 0xff);
+	s += name;
+	short v = value;
+	for (unsigned int j = 0; j < sizeof(v); j++) {
+		s += (v & 0xff000000) >> 24;
+		v <<= 8;
+	}
+	stream->write(s.c_str(), s.length());
 }

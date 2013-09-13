@@ -7,7 +7,6 @@ IRTUObject::IRTUObject() {
 
 IRTUObject::~IRTUObject() {
 	for (IRTUElement* irtu : children) {
-		std::cout << "Deleting " << irtu->name << std::endl;
 		delete irtu;
 	}
 }
@@ -36,6 +35,18 @@ IRTULong* readLong(istream* stream) {
 	return ret;
 }
 
+IRTUFloat* readFloat(istream* stream) {
+	IRTUFloat* ret = new IRTUFloat(0);
+	ret->read(stream);
+	return ret;
+}
+
+IRTUDouble* readDouble(istream* stream) {
+	IRTUDouble* ret = new IRTUDouble(0);
+	ret->read(stream);
+	return ret;
+}
+
 IRTUObject* readIRTU(istream* stream) {
 	IRTUObject* ret = new IRTUObject();
 	ret->read(stream);
@@ -46,7 +57,6 @@ void IRTUObject::read(istream* stream) {
 	char* buffer = new char[1];
 	int len, i;
 	int state = STATE_BEGINNING;
-	int type = -1;
 	unsigned int size = 0;
 	unsigned int cnt = 0;
 	name = "";
@@ -58,10 +68,8 @@ void IRTUObject::read(istream* stream) {
 		}
 		i = buffer[0];
 		if (state == STATE_BEGINNING) {
-			type = i;
 			state = STATE_READING_NAME_LENGTH;
 			size = 0;
-			std::cout << "Type: " << type << std::endl;
 			continue;
 		}
 		if (state == STATE_READING_NAME_LENGTH) {
@@ -75,7 +83,6 @@ void IRTUObject::read(istream* stream) {
 					state = STATE_READING_CONTENT;
 				}
 				cnt = 0;
-				std::cout << "Name length: " << size << std::endl;
 			}
 			continue;
 		}
@@ -83,7 +90,6 @@ void IRTUObject::read(istream* stream) {
 			++cnt;
 			name += (char) i;
 			if (size == cnt) {
-				std::cout << "Name: " << name << std::endl;
 				state = STATE_READING_CONTENT;
 				continue;
 			}
@@ -93,6 +99,8 @@ void IRTUObject::read(istream* stream) {
 			IRTUShort* irtuShort;
 			IRTUInt* irtuInt;
 			IRTULong* irtuLong;
+			IRTUFloat* irtuFloat;
+			IRTUDouble* irtuDouble;
 			IRTUObject* IRTUObject;
 			switch ((unsigned char) i) {
 			case TAG_TYPE_BYTE:
@@ -119,6 +127,18 @@ void IRTUObject::read(istream* stream) {
 						<< irtuLong->value << std::endl;
 				children.push_back(irtuLong);
 				break;
+			case TAG_TYPE_FLOAT:
+				irtuFloat = readFloat(stream);
+				std::cout << "Read float " << irtuFloat->name << ": "
+						<< irtuFloat->value << std::endl;
+				children.push_back(irtuFloat);
+				break;
+			case TAG_TYPE_DOUBLE:
+				irtuDouble = readDouble(stream);
+				std::cout << "Read double " << irtuDouble->name << ": "
+						<< irtuDouble->value << std::endl;
+				children.push_back(irtuDouble);
+				break;
 			case TAG_TYPE_IRTU:
 				IRTUObject = readIRTU(stream);
 				std::cout << "Read IRTU " << IRTUObject->name << std::endl;
@@ -136,75 +156,39 @@ void IRTUObject::read(istream* stream) {
 	delete[] buffer;
 }
 
+void IRTUObject::write(ostream* stream) {
+	std::string s;
+	s += TAG_TYPE_IRTU;
+	s += (name.length() & 0xff00) >> 8;
+	s += name.length() & 0xff;
+	s += name;
+	stream->write(s.c_str(), s.length());
+	for (IRTUElement* irtu : children) {
+		irtu->write(stream);
+	}
+	s = TAG_END_IRTU;
+	stream->write(s.c_str(), s.length());
+}
+
 int main() {
-	std::string testString;
-
-	std::string name = "Cya";
-	testString += TAG_TYPE_IRTU;
-	testString += ((name.length() & 0xff00) >> 8);
-	testString += (name.length() & 0xff);
-	testString += name;
-
-	testString += TAG_TYPE_SHORT;
-	name = "test_short";
-	testString += ((name.length() & 0xff00) >> 8);
-	testString += (name.length() & 0xff);
-	testString += name;
-	testString += (char) 0;
-	testString += (short) -16;
-
-	testString += TAG_TYPE_BYTE;
-	name = "test_byte";
-	testString += ((name.length() & 0xff00) >> 8);
-	testString += (name.length() & 0xff);
-	testString += name;
-	testString += 0xf0;
-
-	testString += TAG_TYPE_LONG;
-	name = "test_long (:iykwim:)";
-	testString += ((name.length() & 0xff00) >> 8);
-	testString += (name.length() & 0xff);
-	testString += name;
-	testString += (char) 0;
-	testString += (char) 0;
-	testString += (char) 0;
-	testString += (char) 0;
-	testString += (char) 0;
-	testString += (char) 0;
-	testString += (char) 0;
-	testString += (long) -16;
-
-	name = "bye";
-	testString += TAG_TYPE_IRTU;
-	testString += TAG_TYPE_IRTU;
-	testString += ((name.length() & 0xff00) >> 8);
-	testString += (name.length() & 0xff);
-	testString += name;
-	testString += TAG_TYPE_INT;
-	name = "nested_test_int";
-	testString += ((name.length() & 0xff00) >> 8);
-	testString += (name.length() & 0xff);
-	testString += name;
-	testString += (char) 0;
-	testString += (char) 0;
-	testString += (char) 0;
-	testString += (int) -16;
-	testString += TAG_END_IRTU;
-
-	testString += TAG_TYPE_INT;
-	name = "test_int";
-	testString += ((name.length() & 0xff00) >> 8);
-	testString += (name.length() & 0xff);
-	testString += name;
-	testString += (char) 0;
-	testString += (char) 0;
-	testString += (char) 0;
-	testString += (int) -16;
-
-	testString += TAG_END_IRTU;
-
-	istream* stream = new std::istringstream(testString);
-	IRTUObject irtu;
-	irtu.read(stream);
-	delete stream;
+	std::ostringstream* ostream = new std::ostringstream();
+	IRTUObject* object = new IRTUObject();
+	object->name = "test_object";
+	IRTUInt* irtuI = new IRTUInt(160);
+	irtuI->name = "test_int";
+	object->children.push_back(irtuI);
+	IRTUFloat* irtuF = new IRTUFloat(3.141f);
+	irtuF->name = "test_float";
+	object->children.push_back(irtuF);
+	IRTUDouble* irtuD = new IRTUDouble(1.41421);
+	irtuD->name = "test_double";
+	object->children.push_back(irtuD);
+	object->write(ostream);
+	std::string data = ostream->str();
+	std::istringstream* istream = new std::istringstream(data);
+	IRTUObject object2;
+	object2.read(istream);
+	delete object;
+	delete ostream;
+	delete istream;
 }

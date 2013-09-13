@@ -59,5 +59,6 @@ void IRTUList::read(istream* stream) {
 
 		}
 	}
+	delete[] buffer;
 }
 

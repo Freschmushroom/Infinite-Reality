@@ -1,16 +1,22 @@
 #include "IRTU.hpp"
 
-IRTUByte::IRTUByte(char value) :
+IRTUFloat::IRTUFloat(float value) :
 		value(value) {
 
 }
 
-void IRTUByte::read(istream* stream) {
+union rawFloatBits {
+	float f;
+	unsigned int i;
+};
+
+void IRTUFloat::read(istream* stream) {
 	char* buffer = new char[1];
 	int i;
 	int state = STATE_READING_NAME_LENGTH;
 	unsigned int size = 0;
 	unsigned int cnt = 0;
+	rawFloatBits bits;
 	while ((stream->rdstate() & stream->eofbit) == 0) {
 		stream->read(buffer, 1);
 		if (stream->gcount() == 0) {
@@ -42,19 +48,32 @@ void IRTUByte::read(istream* stream) {
 			continue;
 		}
 		if (state == STATE_READING_CONTENT) {
-			value = (char) i;
-			break;
+			bits.i <<= 8;
+			bits.i |= i;
+			++cnt;
+			if (cnt == 4) {
+				break;
+			}
+			continue;
 		}
 	}
+	value = bits.f;
 	delete[] buffer;
 }
 
-void IRTUByte::write(ostream* stream) {
+void IRTUFloat::write(ostream* stream) {
 	std::string s;
-	s += TAG_TYPE_BYTE;
+	s += TAG_TYPE_FLOAT;
 	s += ((name.length() & 0xff00) >> 8);
 	s += (name.length() & 0xff);
 	s += name;
-	s += value;
+	rawFloatBits bits;
+	bits.f = value;
+	int i = bits.i;
+	for (unsigned int j = 0; j < sizeof(i); j++) {
+		s += (i & 0xff000000) >> 24;
+		i <<= 8;
+
+	}
 	stream->write(s.c_str(), s.length());
 }

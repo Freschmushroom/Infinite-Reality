@@ -4,6 +4,7 @@
 #include <list>
 #include <iostream>
 #include <string>
+#include "debug_new.h"
 
 using std::list;
 using std::istream;
@@ -32,15 +33,17 @@ public:
 	std::string name;
 
 	virtual void read(istream* stream) = 0;
+	virtual void write(ostream* stream) = 0;
 	virtual ~IRTUElement() = 0;
 };
 
 class IRTUObject: public IRTUElement {
-	list<IRTUElement*> children;
 public:
+	list<IRTUElement*> children;
 	IRTUObject();
 
 	void read(istream* stream);
+	void write(ostream* stream);
 	~IRTUObject();
 };
 
@@ -49,6 +52,7 @@ public:
 	char value;
 	IRTUByte(char);
 	void read(istream* stream);
+	void write(ostream* stream);
 };
 
 class IRTUShort: public IRTUElement {
@@ -56,6 +60,7 @@ public:
 	short value;
 	IRTUShort(short);
 	void read(istream* stream);
+	void write(ostream* stream);
 };
 
 class IRTUInt: public IRTUElement {
@@ -63,6 +68,7 @@ public:
 	int value;
 	IRTUInt(int);
 	void read(istream* stream);
+	void write(ostream* stream);
 };
 
 class IRTULong: public IRTUElement {
@@ -70,12 +76,30 @@ public:
 	long value;
 	IRTULong(long);
 	void read(istream* stream);
+	void write(ostream* stream);
+};
+
+class IRTUFloat: public IRTUElement {
+public:
+	float value;
+	IRTUFloat(float);
+	void read(istream* stream);
+	void write(ostream* stream);
+};
+
+class IRTUDouble: public IRTUElement {
+public:
+	double value;
+	IRTUDouble(double);
+	void read(istream* stream);
+	void write(ostream* stream);
 };
 
 class IRTUList: public IRTUElement {
 public:
 	IRTUList();
 	void read(istream* stream);
+	void write(ostream* stream) = 0;
 };
 
 #endif

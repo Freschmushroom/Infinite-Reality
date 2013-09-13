@@ -16,7 +16,7 @@ void IRTUInt::read(istream* stream) {
 		if (stream->gcount() == 0) {
 			continue;
 		}
-		i = buffer[0];
+		i = (unsigned char) buffer[0];
 		if (state == STATE_READING_NAME_LENGTH) {
 			++cnt;
 			size <<= 8;
@@ -46,9 +46,25 @@ void IRTUInt::read(istream* stream) {
 			value |= i;
 			++cnt;
 			if (cnt == 4) {
-				return;
+				break;
 			}
 			continue;
 		}
 	}
+	delete[] buffer;
+}
+
+void IRTUInt::write(ostream* stream) {
+	std::string s;
+	s += TAG_TYPE_INT;
+	s += ((name.length() & 0xff00) >> 8);
+	s += (name.length() & 0xff);
+	s += name;
+	int i = value;
+	for (unsigned int j = 0; j < sizeof(i); j++) {
+		s += (i & 0xff000000) >> 24;
+		i <<= 8;
+
+	}
+	stream->write(s.c_str(), s.length());
 }

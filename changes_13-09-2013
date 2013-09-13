@@ -1,0 +1,13 @@
+# CHANGELOG
+# DATE (DD|MM|YY): 13 09 13
+
++ Added system to save IRTUs.
++ Included a debugging tool (NVWA - http://wyw.dcweb.cn/leakage.htm) to detect memory leaks.
++ Added support for floats and doubles.
+
+~ Fixed several memory leaks.
+
+! Lists are yet to be implemented.
+! Doubles are saved as two integers; float as one. Incompatibility on 16 bit system is likely.
+
+? NVWA (static library)
