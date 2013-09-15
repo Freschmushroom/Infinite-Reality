@@ -67,3 +67,7 @@ void IRTULong::write(ostream* stream) {
 	}
 	stream->write(s.c_str(), s.length());
 }
+
+std::string IRTULong::toString(int initIndent) {
+	return createIndent(initIndent) + "[long name=\"" + name + "\", value=" + lToString(value) + "]";
+}

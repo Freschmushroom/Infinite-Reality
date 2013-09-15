@@ -4,7 +4,7 @@
 #include <list>
 #include <iostream>
 #include <string>
-#include "debug_new.h"
+#include "nvwa/debug_new.h"
 
 using std::list;
 using std::istream;
@@ -34,16 +34,20 @@ public:
 
 	virtual void read(istream* stream) = 0;
 	virtual void write(ostream* stream) = 0;
+	virtual std::string toString(int initIndent) = 0;
 	virtual ~IRTUElement() = 0;
 };
 
 class IRTUObject: public IRTUElement {
-public:
 	list<IRTUElement*> children;
+public:
 	IRTUObject();
 
+	void readNew(istream* stream);
 	void read(istream* stream);
 	void write(ostream* stream);
+	void add(IRTUElement* child);
+	std::string toString(int initIndent);
 	~IRTUObject();
 };
 
@@ -53,6 +57,7 @@ public:
 	IRTUByte(char);
 	void read(istream* stream);
 	void write(ostream* stream);
+	std::string toString(int initIndent);
 };
 
 class IRTUShort: public IRTUElement {
@@ -61,6 +66,7 @@ public:
 	IRTUShort(short);
 	void read(istream* stream);
 	void write(ostream* stream);
+	std::string toString(int initIndent);
 };
 
 class IRTUInt: public IRTUElement {
@@ -69,6 +75,7 @@ public:
 	IRTUInt(int);
 	void read(istream* stream);
 	void write(ostream* stream);
+	std::string toString(int initIndent);
 };
 
 class IRTULong: public IRTUElement {
@@ -77,6 +84,7 @@ public:
 	IRTULong(long);
 	void read(istream* stream);
 	void write(ostream* stream);
+	std::string toString(int initIndent);
 };
 
 class IRTUFloat: public IRTUElement {
@@ -85,6 +93,7 @@ public:
 	IRTUFloat(float);
 	void read(istream* stream);
 	void write(ostream* stream);
+	std::string toString(int initIndent);
 };
 
 class IRTUDouble: public IRTUElement {
@@ -93,6 +102,7 @@ public:
 	IRTUDouble(double);
 	void read(istream* stream);
 	void write(ostream* stream);
+	std::string toString(int initIndent);
 };
 
 class IRTUList: public IRTUElement {
@@ -100,6 +110,24 @@ public:
 	IRTUList();
 	void read(istream* stream);
 	void write(ostream* stream) = 0;
+	std::string toString(int initIndent);
 };
+
+std::string createIndent(int indent);
+
+std::string bToString(char b);
+std::string sToString(short s);
+std::string iToString(int i);
+std::string lToString(long l);
+std::string fToString(float f);
+std::string dToString(double d);
+
+IRTUByte* readByte(istream* stream);
+IRTUShort* readShort(istream* stream);
+IRTUInt* readInt(istream* stream);
+IRTULong* readLong(istream* stream);
+IRTUFloat* readFloat(istream* stream);
+IRTUDouble* readDouble(istream* stream);
+IRTUObject* readIRTU(istream* stream);
 
 #endif

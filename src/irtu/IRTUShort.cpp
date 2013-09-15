@@ -67,3 +67,7 @@ void IRTUShort::write(ostream* stream) {
 	}
 	stream->write(s.c_str(), s.length());
 }
+
+std::string IRTUShort::toString(int initIndent) {
+	return createIndent(initIndent) + "[short name=\"" + name + "\", value=" + sToString(value) + "]";
+}

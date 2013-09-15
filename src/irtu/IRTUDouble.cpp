@@ -79,3 +79,7 @@ void IRTUDouble::write(ostream* stream) {
 	}
 	stream->write(s.c_str(), s.length());
 }
+
+std::string IRTUDouble::toString(int initIndent) {
+	return createIndent(initIndent) + "[double name=\"" + name + "\", value=" + dToString(value) + "]";
+}

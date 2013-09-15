@@ -1,0 +1,14 @@
+# CHANGELOG
+# DATE (DD|MM|YY): 15 09 13
+
++ Added a toString method to every IRTU element.
+~ Reorganized NVWA (moved headers into NVWA\ from .\)
+
+* Fixed a bug where signed floats where not stored correctly.
+* Fixed a bug where signed doubles where not stored correctly.
+
+* Fixed a bug where nested IRTU objects took the TAG_TYPE_IRTU as the upper byte for the name length.
+	~ Renamed read method to readNew for IRTU Objects. This should be used when there is no parent IRTU Object.
+	~ Added read method for IRTU Objects. This should be used when there is a parent IRTU Object.
+
+~ Moved several utility methods into IRTU.cpp.

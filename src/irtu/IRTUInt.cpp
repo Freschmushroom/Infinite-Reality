@@ -68,3 +68,7 @@ void IRTUInt::write(ostream* stream) {
 	}
 	stream->write(s.c_str(), s.length());
 }
+
+std::string IRTUInt::toString(int initIndent) {
+	return createIndent(initIndent) + "[integer name=\"" + name + "\", value=" + iToString(value) + "]";
+}

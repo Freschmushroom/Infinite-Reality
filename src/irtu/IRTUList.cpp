@@ -62,3 +62,6 @@ void IRTUList::read(istream* stream) {
 	delete[] buffer;
 }
 
+std::string IRTUList::toString(int initIndent) {
+	return createIndent(initIndent) + "<not implemented>";
+}

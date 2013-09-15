@@ -22,7 +22,7 @@ void IRTUFloat::read(istream* stream) {
 		if (stream->gcount() == 0) {
 			continue;
 		}
-		i = buffer[0];
+		i = (unsigned char) buffer[0];
 		if (state == STATE_READING_NAME_LENGTH) {
 			++cnt;
 			size <<= 8;
@@ -73,7 +73,10 @@ void IRTUFloat::write(ostream* stream) {
 	for (unsigned int j = 0; j < sizeof(i); j++) {
 		s += (i & 0xff000000) >> 24;
 		i <<= 8;
-
 	}
 	stream->write(s.c_str(), s.length());
+}
+
+std::string IRTUFloat::toString(int initIndent) {
+	return createIndent(initIndent) + "[float name=\"" + name + "\", value=" + fToString(value) + "]";
 }

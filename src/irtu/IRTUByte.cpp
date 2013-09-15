@@ -58,3 +58,7 @@ void IRTUByte::write(ostream* stream) {
 	s += value;
 	stream->write(s.c_str(), s.length());
 }
+
+std::string IRTUByte::toString(int initIndent) {
+	return createIndent(initIndent) + "[byte name=\"" + name + "\", value=" + bToString(value) + "]";
+}
