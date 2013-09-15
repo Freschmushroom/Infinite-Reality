@@ -39,8 +39,8 @@ public:
 };
 
 class IRTUObject: public IRTUElement {
-	list<IRTUElement*> children;
 public:
+	list<IRTUElement*> children;
 	IRTUObject();
 
 	void readNew(istream* stream);
