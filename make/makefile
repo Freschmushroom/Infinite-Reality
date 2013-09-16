@@ -26,9 +26,11 @@ endif
 ifeq ($(OS),Windows_NT)
     BUILD_PATH := ../win_build
 	RM := del /Q
+    SUFFIX := .exe
 else
     BUILD_PATH := ../linux_build
 	RM := rm -rf
+    SUFFIX := 
 endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
@@ -40,7 +42,7 @@ all: Infinite-Reality.exe
 Infinite-Reality.exe: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: MinGW C++ Linker'
-	g++ -L"../include" -L"../src" -L"../libs" -o "$(BUILD_PATH)/Infinite-Reality.exe" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L"../include" -L"../src" -L"../libs" -o "$(BUILD_PATH)/Infinite-Reality$(SUFFIX)" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

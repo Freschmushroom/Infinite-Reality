@@ -4,7 +4,6 @@
 #include <list>
 #include <iostream>
 #include <string>
-#include "nvwa/debug_new.h"
 
 using std::list;
 using std::istream;

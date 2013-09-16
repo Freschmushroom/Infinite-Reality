@@ -1,3 +1,3 @@
 USER_OBJS :=
 
-LIBS := -lNVWA
+LIBS := 

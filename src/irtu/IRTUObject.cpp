@@ -5,8 +5,12 @@ IRTUObject::IRTUObject() {
 }
 
 IRTUObject::~IRTUObject() {
-	for (IRTUElement* irtu : this->children) {
+	//Replaced for compatibility issues
+	/*for (IRTUElement* irtu : this->children) {
 		delete irtu;
+	}*/
+	for(std::list<IRTUElement *>::iterator list_iter = children.begin(); list_iter != children.end(); ++list_iter) {
+		delete *list_iter;
 	}
 }
 void IRTUObject::read(istream* stream) {
@@ -217,8 +221,12 @@ void IRTUObject::write(ostream* stream) {
 	s += name.length() & 0xff;
 	s += name;
 	stream->write(s.c_str(), s.length());
-	for (IRTUElement* irtu : children) {
+	//Replaced for compatibility issues
+	/*for (IRTUElement* irtu : children) {
 		irtu->write(stream);
+	}*/
+	for(std::list<IRTUElement *>::iterator list_iter = children.begin(); list_iter != children.end(); ++list_iter) {
+		(*list_iter)->write(stream);
 	}
 	s = TAG_END_IRTU;
 	stream->write(s.c_str(), s.length());
@@ -231,8 +239,12 @@ void IRTUObject::add(IRTUElement* child) {
 std::string IRTUObject::toString(int initIndent) {
 	std::string string = createIndent(initIndent) + "[object name=\"" + name
 			+ "\", memberCount=" + iToString(children.size()) + "]:\n";
-	for (IRTUElement* element : children) {
+	//Replaced for compatibility issues
+	/*for (IRTUElement* element : children) {
 		string += element->toString(initIndent + 1) + "\n";
+	}*/
+	for(std::list<IRTUElement *>::iterator list_iter = children.begin(); list_iter != children.end(); ++list_iter) {
+		string += (*list_iter)->toString(initIndent + 1) + "\n";
 	}
 	string += createIndent(initIndent) + "[object_end]";
 	return string;
