@@ -1,0 +1,9 @@
+Added Linux compatibility
+
+Changed from for:each loops to c++98 mode compatible iterator loops
+
+linux_build:
+	Built under OpenSuSe 12.3 (amd64) with no additional librarys or headers
+
+win_build:
+	Built under Microsoft Windows 7 (x86) with no additional librarys or headers
